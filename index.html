@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="icon.png" type="image/png">
+<title>dance</title>
+
+<style>
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+  :root {
+    --red: #FF3511;
+    --font-serif: 'Source Serif 4', 'Pretendard Variable', Pretendard, serif;
+    --font-sans: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #3a3a22;
+  }
+
+  body {
+    position: relative;
+    font-family: var(--font-sans);
+    color: var(--red);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Background video ─────────────────────────── */
+  .bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* ── h1 ───────────────────────────────────────── */
+  h1 {
+    position: absolute;
+    top: 62px;
+    left: 85px;
+    z-index: 2;
+    font-family: var(--font-serif);
+    font-weight: 450;
+    font-size: 165px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--red);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* ── h2 ───────────────────────────────────────── */
+  h2 {
+    position: absolute;
+    top: 250px;
+    left: 85px;
+    z-index: 2;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 1;
+    color: var(--red);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* ── h3 (vertical, reads bottom → top) ────────── */
+  h3 {
+    position: absolute;
+    left: 1683px;
+    z-index: 2;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--red);
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    pointer-events: none;
+  }
+  .h3-title    { top: 36px;  }
+  .h3-director { top: 376px; }
+  .h3-studio   { top: 778px; }
+
+  /* ── Moving circle group ──────────────────────── */
+  .circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    will-change: transform;
+  }
+
+  .circle span {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 42px;
+    line-height: 1.2;
+    color: #fff;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <video class="bg-video" src="background.mp4" autoplay muted loop playsinline></video>
+
+  <h1>dance</h1>
+  <h2>— Tracing Billy Elliot</h2>
+
+  <h3 class="h3-title">Billy Elliot(2000)</h3>
+  <h3 class="h3-director">Stephen David Daldry</h3>
+  <h3 class="h3-studio">Universal Pictures</h3>
+
+  <div class="circle" id="circle" role="link" aria-label="Let’s dance! — chapter 페이지로 이동">
+    <span>Let’s<br>dance!</span>
+  </div>
+
+<script>
+  const circle = document.getElementById('circle');
+
+  let x = 100;
+  let y = 100;
+  // 이동 속도 (px/frame)
+  let dx = 2.2;
+  let dy = 1.8;
+
+  function move() {
+    const w = circle.offsetWidth;
+    const h = circle.offsetHeight;
+    const maxX = window.innerWidth  - w;
+    const maxY = window.innerHeight - h;
+
+    x += dx;
+    y += dy;
+
+    // 윈도우 모서리에 닿으면 방향 전환
+    if (x <= 0)    { x = 0;    dx = Math.abs(dx);  }
+    if (x >= maxX) { x = maxX; dx = -Math.abs(dx); }
+    if (y <= 0)    { y = 0;    dy = Math.abs(dy);  }
+    if (y >= maxY) { y = maxY; dy = -Math.abs(dy); }
+
+    circle.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(move);
+  }
+
+  circle.style.transform = `translate(${x}px, ${y}px)`;
+  requestAnimationFrame(move);
+
+  // 원 클릭 → chapter.html
+  circle.addEventListener('click', () => {
+    window.location.href = 'chapter.html';
+  });
+</script>
+</body>
+</html>

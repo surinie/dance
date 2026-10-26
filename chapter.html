@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="icon.png" type="image/png">
+<title>dance</title>
+
+<style>
+  :root {
+    --red: #FF3511;
+    --font-serif: 'Source Serif 4', 'Pretendard Variable', Pretendard, serif;
+    --font-sans: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  body {
+    position: relative;
+    font-family: var(--font-sans);
+    color: #000;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Background png (위치·크기는 직접 조정) ─────── */
+  .bg-red {
+    position: absolute;
+    left: -263px;
+    top: -251px;
+    height: 2040px;
+    width: auto;
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── h1 (클릭 → index.html) ───────────────────── */
+  h1 {
+    position: absolute;
+    top: 42px;
+    left: 94px;
+    z-index: 4;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 95px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--red);
+    white-space: nowrap;
+  }
+  h1 a { color: var(--red); }
+
+  /* ── Hover description ─────────────────────────
+     최대 폭 371px 안에서 줄바꿈, 줄마다 밑줄(첫 줄은 윗선 포함)이
+     해당 줄 텍스트 길이만큼 생성됨 */
+  .desc {
+    position: absolute;
+    top: 156px;
+    left: 94px;
+    z-index: 4;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s;
+  }
+  .desc.on {
+    opacity: 1;
+    visibility: visible;
+  }
+  .desc-line {
+    display: block;
+    width: fit-content;
+    height: 39px;
+    border-bottom: 1px solid var(--red);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 38px;
+    color: #000;
+    white-space: nowrap;
+  }
+  .desc-line:first-child {
+    height: 40px;
+    border-top: 1px solid var(--red);
+  }
+
+  /* 줄바꿈 계산용 (화면에 보이지 않음) */
+  .desc-measure {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    width: 371px;
+    visibility: hidden;
+    pointer-events: none;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 42px;
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  /* ── 인물 png (좌표·높이는 직접 조정) ─────────── */
+  .figure {
+    position: absolute;
+    display: block;
+    line-height: 0;
+    z-index: 2;
+  }
+  .figure img {
+    display: block;
+    width: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .f1 { left: 170px;  top: 190px; }  .f1 img { height: 680px; }
+  .f2 { left: 310px;  top: 80px; }  .f2 img { height: 910px; }
+  .f3 { left: 660px;  top: 170px; }  .f3 img { height: 710px; }
+  .f4 { left: 905px;  top: 160px; }  .f4 img { height: 750px; }
+  .f5 { left: 1218px; top: 145px; }  .f5 img { height: 750px; }
+
+  /* ── 하단 라벨 (이미지와 별도로 absolute) ──────── */
+  .label {
+    position: absolute;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    font-family: var(--font-sans);
+    font-weight: 450;
+    font-size: 23px;
+    line-height: 28px;
+    color: #000;
+    white-space: nowrap;
+  }
+  .label .num {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+  }
+  .l1 { left: 225px;  top: 880px; }
+  .l2 { left: 525px;  top: 880px; }
+  .l3 { left: 790px;  top: 880px; }
+  .l4 { left: 1070px; top: 880px; }
+  .l5 { left: 1340px; top: 880px; }
+
+  /* ── h3 (vertical, reads bottom → top) ────────── */
+  h3 {
+    position: absolute;
+    left: 1683px;
+    z-index: 2;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--red);
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    pointer-events: none;
+  }
+  .h3-title    { top: 36px;  }
+  .h3-director { top: 376px; }
+  .h3-studio   { top: 778px; }
+</style>
+</head>
+<body>
+
+  <img class="bg-red" src="backgroundred.png" alt="">
+
+  <h1><a href="index.html">dance</a></h1>
+
+  <!-- hover 시 나타나는 설명 -->
+  <div class="desc" id="desc"></div>
+  <div class="desc-measure" id="desc-measure" aria-hidden="true"></div>
+
+  <!-- 인물 png -->
+  <a class="figure f1" href="1.html" data-chapter="1"><img src="1.png" alt="ballet class"></a>
+  <a class="figure f2" href="2.html" data-chapter="2"><img src="2.png" alt="street"></a>
+  <a class="figure f3" href="3.html" data-chapter="3"><img src="3.png" alt="christmas"></a>
+  <a class="figure f4" href="4.html" data-chapter="4"><img src="4.png" alt="audition"></a>
+  <a class="figure f5" href="5.html" data-chapter="5"><img src="5.png" alt="finale"></a>
+
+  <!-- 하단 번호 + 텍스트 -->
+  <a class="label l1" href="1.html" data-chapter="1"><span class="num">1</span>ballet class</a>
+  <a class="label l2" href="2.html" data-chapter="2"><span class="num">2</span>street</a>
+  <a class="label l3" href="3.html" data-chapter="3"><span class="num">3</span>christmas</a>
+  <a class="label l4" href="4.html" data-chapter="4"><span class="num">4</span>audition</a>
+  <a class="label l5" href="5.html" data-chapter="5"><span class="num">5</span>finale</a>
+
+  <!-- 우측 세로 텍스트 -->
+  <h3 class="h3-title">Billy Elliot(2000)</h3>
+  <h3 class="h3-director">Stephen David Daldry</h3>
+  <h3 class="h3-studio">Universal Pictures</h3>
+
+<script>
+  // 임시 문구
+  const descriptions = {
+    1: '처음 들어선 발레 수업에서 빌리는 낯선 동작 사이로 자신만의 리듬을 찾기 시작한다.',
+    2: '아버지와 형의 반대에 부딪힌 빌리. 빌리는 거친 몸짓으로 춤을 추며 감정을 온몸으로 쏟아낸다.',
+    3: '춤추는 모습을 아버지에게 들킨 빌리. 빌리는 결국 아버지에 자신의 춤을 숨김없이 보여준다.',
+    4: '춤을 출 때 어떤 기분이니? 새처럼 나는 것 같아요. 마치 전기같아요.',
+    5: '빌리는 백조가 되어 하늘 높이 날아오른다. 객석에서 아버지와 형이 지켜보는 가운데 힘차게 도약한다.'
+  };
+
+  const desc = document.getElementById('desc');
+  const measure = document.getElementById('desc-measure');
+
+  // 최대 폭(371px) 안에서 텍스트가 줄바꿈되는 위치를 계산해 줄 단위 문자열로 반환
+  function splitLines(text) {
+    measure.textContent = text;
+    const node = measure.firstChild;
+    const range = document.createRange();
+    const lines = [];
+    let cur = '';
+    let curTop = null;
+
+    for (let i = 0; i < text.length; i++) {
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      const rects = range.getClientRects();
+      if (rects.length) {
+        const top = rects[0].top;
+        if (curTop === null) {
+          curTop = top;
+        } else if (Math.abs(top - curTop) > 5) {
+          lines.push(cur.trim());
+          cur = '';
+          curTop = top;
+        }
+      }
+      cur += text[i];
+    }
+    if (cur.trim()) lines.push(cur.trim());
+    return lines;
+  }
+
+  function showDesc(n) {
+    desc.innerHTML = '';
+    splitLines(descriptions[n]).forEach(line => {
+      const row = document.createElement('div');
+      row.className = 'desc-line';
+      row.textContent = line;
+      desc.appendChild(row);
+    });
+    desc.classList.add('on');
+  }
+
+  document.querySelectorAll('[data-chapter]').forEach(el => {
+    el.addEventListener('mouseenter', () => showDesc(el.dataset.chapter));
+    el.addEventListener('mouseleave', () => desc.classList.remove('on'));
+  });
+</script>
+</body>
+</html>
