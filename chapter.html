@@ -15,6 +15,13 @@
     --red: #FF3511;
     --font-serif: 'Source Serif 4', 'Pretendard Variable', Pretendard, serif;
     --font-sans: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+
+    /* 호버 설명 (크기 / 줄 최대 가로 길이 / 줄 간격(한 줄 높이)) */
+    --desc-size: 18px;
+    --desc-width: 430px;
+    --desc-row: 42px;
+    --name-lh: 24px;          /* 챕터명이 두 줄일 때 행간 */
+    --desc-indent: 132px;   /* 번호 + 챕터명 칸 + 마진 (설명글이 시작하는 가로 위치) */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,28 +55,42 @@
     user-select: none;
   }
 
-  /* ── h1 (클릭 → index.html) ───────────────────── */
+  /* ── h1 (클릭 → index.html) · 호버 설명이 나타나면 사라지고 설명으로 대체됨 ── */
   h1 {
     position: absolute;
-    top: 42px;
-    left: 94px;
+    top: 40px;
+    left: 110px;
     z-index: 4;
     font-family: var(--font-serif);
     font-weight: 500;
-    font-size: 95px;
+    font-size: 85px;
     line-height: 1;
     letter-spacing: -0.01em;
     color: var(--red);
     white-space: nowrap;
+    transition: opacity 0.2s ease;
   }
   h1 a { color: var(--red); }
+  body.desc-on h1 { opacity: 0; pointer-events: none; }
+
+  /* ── 좌측 붉은 장식 막대 (높이 100%, 폭은 다른 콘텐츠(설명 left:94px)와 겹치지 않는 값) ── */
+  .deco-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    background: var(--red);
+    z-index: 1;
+    pointer-events: none;
+  }
 
   /* ── Hover description ─────────────────────────
-     최대 폭 371px 안에서 줄바꿈, 줄마다 밑줄(첫 줄은 윗선 포함)이
+     최대 폭(--desc-width) 안에서 줄바꿈, 줄마다 밑줄(첫 줄은 윗선 포함)이
      해당 줄 텍스트 길이만큼 생성됨 */
   .desc {
     position: absolute;
-    top: 156px;
+    top: 42px;
     left: 94px;
     z-index: 4;
     opacity: 0;
@@ -81,20 +102,51 @@
     opacity: 1;
     visibility: visible;
   }
+  /* 챕터명: 설명글 앞(왼쪽 94px 기존 시작 위치)에 첫 줄과 같은 높이로 표시 */
+  .desc-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: calc(var(--desc-row) / 2 - var(--name-lh) / 2 + 1px);   /* 첫 줄 중심을 설명 첫 줄에 맞춤 */
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--desc-size);
+    line-height: var(--name-lh);
+    color: var(--red);
+    white-space: pre-line;              /* 챕터명 안의 줄바꿈(\n) 유지, 왼쪽 정렬 */
+    text-align: left;
+  }
+  .desc-name .num {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: calc(var(--name-lh) / 2 - 10px);
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+  }
+  .desc-body { margin-left: var(--desc-indent); }
   .desc-line {
     display: block;
     width: fit-content;
-    height: 39px;
+    height: var(--desc-row);
     border-bottom: 1px solid var(--red);
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 16px;
-    line-height: 38px;
+    font-size: var(--desc-size);
+    line-height: calc(var(--desc-row) - 1px);
     color: #000;
     white-space: nowrap;
   }
   .desc-line:first-child {
-    height: 40px;
+    height: calc(var(--desc-row) + 1px);
     border-top: 1px solid var(--red);
   }
 
@@ -103,13 +155,13 @@
     position: absolute;
     left: -9999px;
     top: 0;
-    width: 371px;
+    width: var(--desc-width);
     visibility: hidden;
     pointer-events: none;
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 18px;
-    line-height: 42px;
+    font-size: var(--desc-size);
+    line-height: var(--desc-row);
     white-space: normal;
     word-break: keep-all;
     overflow-wrap: anywhere;
@@ -128,11 +180,11 @@
     user-select: none;
     -webkit-user-drag: none;
   }
-  .f1 { left: 170px;  top: 190px; }  .f1 img { height: 680px; }
-  .f2 { left: 310px;  top: 80px; }  .f2 img { height: 910px; }
-  .f3 { left: 660px;  top: 170px; }  .f3 img { height: 710px; }
-  .f4 { left: 905px;  top: 160px; }  .f4 img { height: 750px; }
-  .f5 { left: 1218px; top: 145px; }  .f5 img { height: 750px; }
+  .f1 { left: 170px;  top: 180px; }  .f1 img { height: 680px; }
+  .f2 { left: 310px;  top: 70px; }  .f2 img { height: 910px; }
+  .f3 { left: 660px;  top: 160px; }  .f3 img { height: 710px; }
+  .f4 { left: 905px;  top: 150px; }  .f4 img { height: 750px; }
+  .f5 { left: 1218px; top: 135px; }  .f5 img { height: 750px; }
 
   /* ── 하단 라벨 (이미지와 별도로 absolute) ──────── */
   .label {
@@ -161,11 +213,11 @@
     line-height: 20px;
     text-align: center;
   }
-  .l1 { left: 225px;  top: 880px; }
-  .l2 { left: 525px;  top: 880px; }
-  .l3 { left: 790px;  top: 880px; }
-  .l4 { left: 1070px; top: 880px; }
-  .l5 { left: 1340px; top: 880px; }
+  .l1 { left: 225px;  top: 870px; }
+  .l2 { left: 525px;  top: 870px; }
+  .l3 { left: 790px;  top: 870px; }
+  .l4 { left: 1070px; top: 870px; }
+  .l5 { left: 1340px; top: 870px; }
 
   /* ── h3 (vertical, reads bottom → top) ────────── */
   h3 {
@@ -189,7 +241,7 @@
 </head>
 <body>
 
-  <img class="bg-red" src="backgroundred.png" alt="">
+  <div class="deco-bar"></div>
 
   <h1><a href="index.html">dance</a></h1>
 
@@ -226,10 +278,12 @@
     5: '빌리는 백조가 되어 하늘 높이 날아오른다. 객석에서 아버지와 형이 지켜보는 가운데 힘차게 도약한다.'
   };
 
+  const names = { 1: 'ballet\nclass', 2: 'street', 3: 'christmas', 4: 'audition', 5: 'finale' };
+
   const desc = document.getElementById('desc');
   const measure = document.getElementById('desc-measure');
 
-  // 최대 폭(371px) 안에서 텍스트가 줄바꿈되는 위치를 계산해 줄 단위 문자열로 반환
+  // 최대 폭(--desc-width) 안에서 텍스트가 줄바꿈되는 위치를 계산해 줄 단위 문자열로 반환
   function splitLines(text) {
     measure.textContent = text;
     const node = measure.firstChild;
@@ -260,18 +314,30 @@
 
   function showDesc(n) {
     desc.innerHTML = '';
+    const name = document.createElement('div');
+    name.className = 'desc-name';
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = n;
+    const label = document.createElement('span');
+    label.textContent = names[n];
+    name.append(num, label);
+    const body = document.createElement('div');
+    body.className = 'desc-body';
     splitLines(descriptions[n]).forEach(line => {
       const row = document.createElement('div');
       row.className = 'desc-line';
       row.textContent = line;
-      desc.appendChild(row);
+      body.appendChild(row);
     });
+    desc.append(name, body);
     desc.classList.add('on');
+    document.body.classList.add('desc-on');
   }
 
   document.querySelectorAll('[data-chapter]').forEach(el => {
     el.addEventListener('mouseenter', () => showDesc(el.dataset.chapter));
-    el.addEventListener('mouseleave', () => desc.classList.remove('on'));
+    el.addEventListener('mouseleave', () => { desc.classList.remove('on'); document.body.classList.remove('desc-on'); });
   });
 </script>
 </body>
